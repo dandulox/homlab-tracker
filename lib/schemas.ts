@@ -10,6 +10,7 @@ export const healthCheckSchema = z.object({
 
 // Service Schema
 export const serviceSchema = z.object({
+  id: z.string().uuid().optional(),
   name: z.string().min(1),
   url: z.string().url(),
   icon: z.string().default('Box'),
@@ -25,6 +26,7 @@ export const serviceSchema = z.object({
 
 // Group Schema
 export const groupSchema = z.object({
+  id: z.string().uuid().optional(),
   name: z.string().min(1),
   icon: z.string().default('Folder'),
   order: z.number().default(0),

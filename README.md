@@ -1,17 +1,17 @@
 # Labora - Smart Homelab Dashboard
 
-Ein modernes, selbst-hostbares Homelab-Dashboard im Stil von Heimdall/Homer mit erweiterten API-Integrationen und Mehrfach-Instanzen-Support.
+Ein modernes, selbst-hostbares Homelab-Dashboard mit erweiterten API-Integrationen und Mehrfach-Instanzen-Support.
 
 ## ✨ Features
 
-### 🎯 **Heimdall-Modus**
+### 🎯 **Grid-Modus**
 - **Schöne Kacheln**: Vorgefertigte Service-Presets mit Icons und Beschreibungen
 - **Kategorien**: Organisierte Gruppierung nach Infrastruktur, Netzwerk, Medien, etc.
 - **Favoriten**: Wichtige Services hervorheben
 - **Suchfunktion**: Schnelle Suche über alle Services
 - **Responsive Design**: Optimiert für Desktop und Mobile
 
-### 🔧 **Homer-Modus**
+### 🔧 **Dynamic-Modus**
 - **Health Checks**: Ping und HTTP-Status-Überwachung
 - **API-Adapter**: Live-Daten von verschiedenen Homelab-Services
 - **Mehrfach-Instanzen**: Mehrere Instanzen desselben Service-Typs
@@ -414,8 +414,8 @@ Dieses Projekt steht unter der MIT-Lizenz. Siehe [LICENSE](LICENSE) für Details
 
 ## 🙏 Danksagungen
 
-- **Heimdall** - Inspiration für das Design
-- **Homer** - Weitere Inspiration
+- **Grid-Modus** - Inspiriert von klassischen Dashboard-Designs
+- **Dynamic-Modus** - Inspiriert von modernen API-basierten Dashboards
 - **shadcn/ui** - UI-Komponenten
 - **Lucide** - Icons
 

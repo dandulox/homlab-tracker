@@ -1,6 +1,6 @@
 # Service Registry System
 
-Ein umfassendes Service-Management-System für das Homelab-Dashboard mit Unterstützung für Heimdall- und Homer-Modi.
+Ein umfassendes Service-Management-System für das Homelab-Dashboard mit Unterstützung für Grid- und Dynamic-Modi.
 
 ## 🚀 Features
 
@@ -24,13 +24,13 @@ Ein umfassendes Service-Management-System für das Homelab-Dashboard mit Unterst
 
 ### 🎯 Modi
 
-#### Heimdall-Modus
+#### Grid-Modus
 - Reine Link-Sammlung ohne Live-Daten
 - Template-System (foundation/enhanced)
 - Custom Fields für Deep-Links
 - Keine API-Calls
 
-#### Homer-Modus
+#### Dynamic-Modus
 - Live-Monitoring mit Health-Checks
 - Ping/HTTP-Checks
 - Spezifische Adapter (Pi-hole, Portainer, etc.)
