@@ -26,9 +26,10 @@ import { v4 as uuidv4 } from 'uuid'
 
 interface ServiceFormProps {
   service?: Service
-  groups: Group[]
+  groups?: Group[]
   onSave: (service: Service) => void
   onCancel: () => void
+  onTest?: (service: Service) => void
 }
 
 const iconOptions = [
@@ -45,7 +46,7 @@ const iconOptions = [
   { value: 'Settings', label: 'Settings', icon: Settings },
 ]
 
-export function ServiceForm({ service, groups, onSave, onCancel }: ServiceFormProps) {
+export function ServiceForm({ service, groups = [], onSave, onCancel, onTest }: ServiceFormProps) {
   const [formData, setFormData] = useState<Service>({
     id: service?.id || uuidv4(),
     name: service?.name || '',

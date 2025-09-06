@@ -26,6 +26,8 @@ interface ServiceListProps {
   onDelete: (serviceId: string) => void
   onToggleHidden: (serviceId: string) => void
   onAddNew: () => void
+  onDuplicate?: (service: Service) => void
+  onTest?: (service: Service) => void
 }
 
 const iconMap: Record<string, any> = {
@@ -43,6 +45,8 @@ export function ServiceList({
   onDelete,
   onToggleHidden,
   onAddNew,
+  onDuplicate,
+  onTest,
 }: ServiceListProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedGroup, setSelectedGroup] = useState<string>('all')
