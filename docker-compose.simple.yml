@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  labora:
+    image: node:18-alpine
+    container_name: labora
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    working_dir: /app
+    command: sh -c "npm install && npm run build && npm start"
+    environment:
+      - NODE_ENV=production
+      - CONFIG_PATH=/app/config/config.yml
+    networks:
+      - labora
+
+networks:
+  labora:
+    driver: bridge

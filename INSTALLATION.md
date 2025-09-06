@@ -1,199 +1,142 @@
-# Labora Installation für LXC Container (Ubuntu)
+# Labora Installation
 
-Dieses Verzeichnis enthält Installations- und Wartungsskripte für Labora auf einem LXC Container mit Ubuntu.
+## 🚀 Schnellstart
 
-## Verfügbare Skripte
+### Option 1: Lokale Installation (Empfohlen)
 
-### 1. `install-labora.sh` - Vollständige Installation
-Das Hauptinstallationsskript, das alle notwendigen Komponenten installiert und konfiguriert.
-
-**Funktionen:**
-- Systemaktualisierung
-- Docker und Docker Compose Installation
-- Labora Repository Setup
-- Container-Erstellung und -Start
-- Firewall-Konfiguration
-- Systemd Service Einrichtung
-- Automatische Updates (wöchentlich)
-
-**Verwendung:**
 ```bash
-sudo ./install-labora.sh
+# Repository klonen
+git clone https://github.com/your-username/labora.git
+cd labora
+
+# Starten
+chmod +x start-labora.sh
+./start-labora.sh
 ```
 
-### 2. `update-labora.sh` - Update-Skript
-Aktualisiert Labora auf die neueste Version mit automatischem Backup.
+### Option 2: Docker Compose (Einfach)
 
-**Funktionen:**
-- Backup der aktuellen Konfiguration
-- Repository-Update
-- Docker Images Update
-- Container-Neustart
-- Rollback bei Fehlern
-
-**Verwendung:**
 ```bash
-sudo ./update-labora.sh
+# Repository klonen
+git clone https://github.com/your-username/labora.git
+cd labora
+
+# Starten
+docker-compose -f docker-compose.simple.yml up -d
 ```
 
-### 3. `labora-maintenance.sh` - Wartungsskript
-Interaktives Wartungstool für die tägliche Verwaltung.
+### Option 3: Docker Compose (Produktion)
 
-**Funktionen:**
-- Status-Anzeige
-- Log-Viewing
-- Container-Verwaltung
-- System-Bereinigung
-- Backup-Erstellung
-- Konfigurations-Editor
-- Health Checks
-
-**Verwendung:**
 ```bash
-sudo ./labora-maintenance.sh
+# Repository klonen
+git clone https://github.com/your-username/labora.git
+cd labora
+
+# Konfiguration anpassen
+cp env.example .env
+# Bearbeite .env mit deinen API-Credentials
+
+# Starten
+docker-compose up -d
 ```
 
-## Voraussetzungen
+## 📋 Voraussetzungen
 
-- Ubuntu LXC Container
-- Root-Zugriff
-- Internetverbindung
-- Mindestens 2GB RAM
-- Mindestens 10GB freier Speicherplatz
+- **Node.js**: Version 18 oder höher
+- **Docker**: Version 20 oder höher (für Docker-Installation)
+- **Docker Compose**: Version 2 oder höher (für Docker-Installation)
 
-## Installation
+## 🔧 Konfiguration
 
-1. **Skripte herunterladen:**
+### Umgebungsvariablen
+
+Kopiere `env.example` zu `.env` und passe die Werte an:
+
+```bash
+cp env.example .env
+```
+
+### Widget-APIs (Optional)
+
+Für die Widget-Funktionalität müssen entsprechende API-Credentials gesetzt werden:
+
+```bash
+# Proxmox Widget
+PROXMOX_BASE_URL=https://proxmox.lan:8006
+PROXMOX_TOKEN_ID=dashboard@pve!readonly
+PROXMOX_TOKEN_SECRET=your-token-secret
+
+# pfSense Widget
+PFSENSE_BASE_URL=https://pfsense.lan
+PFSENSE_API_KEY=your-api-key
+PFSENSE_API_SECRET=your-api-secret
+
+# AdGuard Home Widget
+ADGUARD_BASE_URL=http://10.0.20.103
+ADGUARD_USERNAME=admin
+ADGUARD_PASSWORD=your-password
+
+# Nginx Proxy Manager Widget
+NPM_BASE_URL=http://10.0.20.102
+NPM_TOKEN=your-npm-token
+```
+
+## 🌐 Zugriff
+
+Nach dem Start ist Labora verfügbar unter:
+
+- **Dashboard**: http://localhost:3000
+- **Admin-Interface**: http://localhost:3000/admin
+
+## 🐳 Docker-Volumes
+
+Das Docker-Setup verwendet folgende Volumes:
+
+- `./config:/config:ro` - Konfigurationsdateien (read-only)
+- `labora-config:/app/config` - App-interne Konfiguration
+
+## 🔍 Troubleshooting
+
+### Build-Fehler
+
+Falls der Docker-Build fehlschlägt:
+
+1. **Cache leeren**:
    ```bash
-   # Alle Skripte in ein Verzeichnis kopieren
-   mkdir -p /tmp/labora-install
-   cd /tmp/labora-install
-   # Skripte von GitHub herunterladen oder manuell kopieren
+   docker system prune -a
    ```
 
-   **GitHub Repository:** [https://github.com/dandulox/homlab-tracker](https://github.com/dandulox/homlab-tracker)
-
-2. **Berechtigungen setzen:**
+2. **Einfache Docker-Compose verwenden**:
    ```bash
-   chmod +x *.sh
+   docker-compose -f docker-compose.simple.yml up -d
    ```
 
-3. **Installation starten:**
+3. **Lokale Installation**:
    ```bash
-   sudo ./install-labora.sh
+   ./start-labora.sh
    ```
-
-## Nach der Installation
-
-### Zugriff auf Labora
-- **Web-Interface:** `http://[IP-Adresse]:3000`
-- **Health Check:** `http://[IP-Adresse]:3000/api/health`
-
-### Wichtige Verzeichnisse
-- **Installation:** `/opt/labora`
-- **Konfiguration:** `/opt/labora/config/config.yml`
-- **Backups:** `/opt/labora-backup-*`
-- **Logs:** `docker-compose logs`
-
-### Nützliche Befehle
-
-```bash
-# Status anzeigen
-cd /opt/labora && docker-compose ps
-
-# Logs anzeigen
-cd /opt/labora && docker-compose logs -f
-
-# Container neu starten
-cd /opt/labora && docker-compose restart
-
-# Service verwalten
-sudo systemctl start/stop/restart labora
-
-# Wartungstool starten
-sudo /opt/labora/labora-maintenance.sh
-```
-
-## Konfiguration
-
-Die Hauptkonfiguration befindet sich in `/opt/labora/config/config.yml`. 
-
-**Wichtige Einstellungen:**
-- `title`: Dashboard-Titel
-- `auth.enabled`: Authentifizierung aktivieren/deaktivieren
-- `services`: Ihre Homelab-Services
-- `widgets`: Widget-Konfiguration
-- `discovery`: Netzwerk-Discovery-Einstellungen
-
-## Updates
-
-### Automatische Updates
-Das System führt automatisch jeden Sonntag um 2:00 Uhr Updates durch.
-
-### Manuelle Updates
-```bash
-sudo /opt/labora/update-labora.sh
-```
-
-### Update-Skript ausführen
-```bash
-sudo /usr/local/bin/labora-update.sh
-```
-
-## Troubleshooting
-
-### Container startet nicht
-```bash
-cd /opt/labora
-docker-compose logs
-docker-compose down
-docker-compose up -d --build
-```
 
 ### Port bereits belegt
-```bash
-# Prüfen welcher Prozess Port 3000 verwendet
-sudo netstat -tlnp | grep :3000
-sudo lsof -i :3000
+
+Falls Port 3000 bereits belegt ist, ändere den Port in `docker-compose.yml`:
+
+```yaml
+ports:
+  - "3001:3000"  # Ändere 3001 zu einem freien Port
 ```
 
-### Docker-Probleme
-```bash
-# Docker Service neu starten
-sudo systemctl restart docker
+### Konfigurationsfehler
 
-# Docker System bereinigen
-sudo docker system prune -f
-```
+Falls die Konfiguration nicht geladen wird:
 
-### Backup wiederherstellen
-```bash
-# Backup-Verzeichnis finden
-ls -la /opt/labora-backup-*
+1. Überprüfe die `config/config.yml` Datei
+2. Stelle sicher, dass die Datei gültiges YAML ist
+3. Überprüfe die Dateiberechtigungen
 
-# Konfiguration wiederherstellen
-cp -r /opt/labora-backup-[DATUM]/config/ /opt/labora/
-cd /opt/labora && docker-compose restart
-```
-
-## Sicherheit
-
-- Firewall ist standardmäßig aktiviert
-- Nur notwendige Ports sind geöffnet (22, 3000, 80, 443)
-- Container läuft mit eingeschränkten Rechten
-- Regelmäßige automatische Updates
-
-## Support
+## 📞 Support
 
 Bei Problemen:
-1. Überprüfen Sie die Logs: `docker-compose logs`
-2. Führen Sie einen Health Check durch
-3. Verwenden Sie das Wartungstool
-4. Erstellen Sie ein Backup vor Änderungen
 
-## Changelog
-
-- **v1.0.0** - Erste Version mit vollständiger Installation
-- Automatische Updates
-- Wartungstool
-- Backup-System
+1. Überprüfe die [Issues](https://github.com/your-username/labora/issues)
+2. Erstelle ein neues Issue mit detaillierter Beschreibung
+3. Für Diskussionen nutze die [Discussions](https://github.com/your-username/labora/discussions)
