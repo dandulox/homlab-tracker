@@ -1,6 +1,6 @@
 # Labora - Smart Homelab Dashboard
 
-Ein modernes, selbst-hostbares Homelab-Dashboard im Stil von Heimdall/Homer mit erweiterten API-Integrationen und Mehrfach-Instanzen-Support.
+Ein modernes, selbst-hostbares Homelab-Dashboard mit erweiterten API-Integrationen und Mehrfach-Instanzen-Support.
 
 ## 📋 Inhaltsverzeichnis
 
@@ -22,10 +22,10 @@ Ein modernes, selbst-hostbares Homelab-Dashboard im Stil von Heimdall/Homer mit 
 
 ## 🎯 Übersicht
 
-Labora ist ein modernes Homelab-Dashboard, das die besten Features von Heimdall und Homer kombiniert:
+Labora ist ein modernes Homelab-Dashboard mit zwei leistungsstarken Modi:
 
-- **Heimdall-Modus**: Schöne Kacheln mit vorgefertigten Presets
-- **Homer-Modus**: Live-Daten über API-Adapter
+- **Grid-Modus**: Schöne Kacheln mit vorgefertigten Presets
+- **Dynamic-Modus**: Live-Daten über API-Adapter
 - **Mehrfach-Instanzen**: Mehrere Instanzen desselben Service-Typs
 - **Admin-Interface**: Vollständige GUI-Verwaltung
 - **Moderne Architektur**: Next.js 14, TypeScript, TailwindCSS
@@ -832,8 +832,8 @@ Dieses Projekt steht unter der MIT-Lizenz. Siehe [LICENSE](../LICENSE) für Deta
 
 ## 🙏 Danksagungen
 
-- **Heimdall** - Inspiration für das Design
-- **Homer** - Weitere Inspiration
+- **Grid-Modus** - Inspiriert von klassischen Dashboard-Designs
+- **Dynamic-Modus** - Inspiriert von modernen API-basierten Dashboards
 - **shadcn/ui** - UI-Komponenten
 - **Lucide** - Icons
 - **Next.js Team** - Framework

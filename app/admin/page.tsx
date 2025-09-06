@@ -95,35 +95,44 @@ export default function AdminPage() {
   }
 
   const addService = () => {
+    setCurrentView('form')
+    setEditingService(undefined)
+  }
+
+  const handleSaveService = (service: Service) => {
     if (!config) return
 
-    const newService: Service = {
-      name: 'Neuer Service',
-      url: 'https://example.com',
-      icon: 'Box',
-      group: config.groups[0]?.name || 'Unbekannt',
-      tags: [],
-      order: config.services.length,
-    }
+    const updatedServices = editingService
+      ? config.services.map(s => s.id === service.id ? service : s)
+      : [...config.services, service]
 
     setConfig({
       ...config,
-      services: [...config.services, newService],
+      services: updatedServices,
     })
+
+    setCurrentView('list')
+    setEditingService(undefined)
   }
 
-  const updateService = (index: number, updatedService: Service) => {
+  const handleEditService = (service: Service) => {
+    setEditingService(service)
+    setCurrentView('form')
+  }
+
+  const handleDeleteService = (serviceId: string) => {
     if (!config) return
 
-    const newServices = [...config.services]
-    newServices[index] = updatedService
+    const newServices = config.services.filter(s => s.id !== serviceId)
     setConfig({ ...config, services: newServices })
   }
 
-  const removeService = (index: number) => {
+  const handleToggleHidden = (serviceId: string) => {
     if (!config) return
 
-    const newServices = config.services.filter((_, i) => i !== index)
+    const newServices = config.services.map(s => 
+      s.id === serviceId ? { ...s, hidden: !s.hidden } : s
+    )
     setConfig({ ...config, services: newServices })
   }
 
@@ -277,89 +286,26 @@ export default function AdminPage() {
 
           {/* Services */}
           <TabsContent value="services" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <Server className="h-5 w-5" />
-                    <span>Services</span>
-                    <Badge variant="outline">{config.services.length}</Badge>
-                  </div>
-                  <Button onClick={addService}>
-                    <Plus className="h-4 w-4 mr-2" />
-                    Service hinzufügen
-                  </Button>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {config.services.map((service, index) => (
-                  <Card key={index}>
-                    <CardContent className="pt-6">
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <div className="space-y-2">
-                          <Label>Name</Label>
-                          <Input
-                            value={service.name}
-                            onChange={(e) => updateService(index, { ...service, name: e.target.value })}
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label>URL</Label>
-                          <Input
-                            value={service.url}
-                            onChange={(e) => updateService(index, { ...service, url: e.target.value })}
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label>Gruppe</Label>
-                          <select
-                            value={service.group}
-                            onChange={(e) => updateService(index, { ...service, group: e.target.value })}
-                            className="w-full p-2 border rounded-md"
-                          >
-                            {config.groups.map((group) => (
-                              <option key={group.name} value={group.name}>
-                                {group.name}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                        <div className="space-y-2">
-                          <Label>VLAN</Label>
-                          <Input
-                            type="number"
-                            value={service.vlan || ''}
-                            onChange={(e) => updateService(index, { 
-                              ...service, 
-                              vlan: e.target.value ? parseInt(e.target.value) : undefined 
-                            })}
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label>Tags (kommagetrennt)</Label>
-                          <Input
-                            value={service.tags.join(', ')}
-                            onChange={(e) => updateService(index, { 
-                              ...service, 
-                              tags: e.target.value.split(',').map(t => t.trim()).filter(Boolean)
-                            })}
-                          />
-                        </div>
-                        <div className="flex items-end">
-                          <Button
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => removeService(index)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </CardContent>
-            </Card>
+            {currentView === 'list' ? (
+              <ServiceList
+                services={config.services}
+                groups={config.groups}
+                onEdit={handleEditService}
+                onDelete={handleDeleteService}
+                onToggleHidden={handleToggleHidden}
+                onAddNew={addService}
+              />
+            ) : (
+              <ServiceForm
+                service={editingService}
+                groups={config.groups}
+                onSave={handleSaveService}
+                onCancel={() => {
+                  setCurrentView('list')
+                  setEditingService(undefined)
+                }}
+              />
+            )}
           </TabsContent>
 
           {/* Groups */}

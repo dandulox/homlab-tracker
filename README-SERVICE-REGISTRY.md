@@ -61,8 +61,8 @@ app/admin/services/
 └── page.tsx                    # Admin-UI
 
 config/
-├── services-example.json       # Homer-Modus Beispiel
-└── services-heimdall-example.json # Heimdall-Modus Beispiel
+├── services-example.json       # Dynamic-Modus Beispiel
+└── services-grid-example.json  # Grid-Modus Beispiel
 
 docs/
 └── SERVICE-REGISTRY.md         # Vollständige Dokumentation
@@ -269,8 +269,8 @@ LIDARR_API_KEY=your_api_key_here
 ```
 
 ### Beispiel-Konfigurationen
-- `config/services-example.json` - Homer-Modus mit Health-Checks
-- `config/services-heimdall-example.json` - Heimdall-Modus mit Templates
+- `config/services-example.json` - Dynamic-Modus mit Health-Checks
+- `config/services-grid-example.json` - Grid-Modus mit Templates
 
 ## 🚀 Nächste Schritte
 

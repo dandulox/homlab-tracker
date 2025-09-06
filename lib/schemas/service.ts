@@ -5,7 +5,7 @@ export const AuthMode = z.enum(['none', 'header_forward', 'basic', 'jwt'])
 
 // Service Adapters Schema - alle verfügbaren Adapter
 export const ServiceAdapters = z.object({
-  // Homer-Style Checks
+  // Dynamic-Modus Health Checks
   ping: z.object({
     enabled: z.boolean(),
     host: z.string().optional(),

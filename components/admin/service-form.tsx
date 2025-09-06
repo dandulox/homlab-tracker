@@ -6,89 +6,63 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Badge } from '@/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { 
-  Plus, 
-  Trash2, 
-  Copy, 
-  TestTube, 
-  AlertCircle,
-  CheckCircle,
-  Settings,
+  ArrowLeft, 
+  Save, 
+  Server,
+  Globe,
+  Filter,
   Shield,
-  Activity
+  Box,
+  Cpu,
+  Database,
+  Monitor,
+  Wifi,
+  Lock,
+  Settings
 } from 'lucide-react'
-import { type Service, type ServiceAdapters, type AuthMode } from '@/lib/schemas/service'
-import { 
-  getAllPresets, 
-  getPresetsByCategory, 
-  getAllCategories,
-  createServiceFromPreset,
-  validateService,
-  type ServicePreset 
-} from '@/lib/presets'
-import { useToast } from '@/components/ui/use-toast'
+import { type Service, type Group } from '@/lib/schemas'
+import { v4 as uuidv4 } from 'uuid'
 
 interface ServiceFormProps {
   service?: Service
+  groups: Group[]
   onSave: (service: Service) => void
   onCancel: () => void
-  onTest?: (service: Service) => Promise<void>
 }
 
-export function ServiceForm({ service, onSave, onCancel, onTest }: ServiceFormProps) {
-  const { toast } = useToast()
-  const [formData, setFormData] = useState<Service>(service || {
-    id: '',
-    type: 'generic',
-    instanceId: '',
-    name: '',
-    url: '',
-    icon: 'Box',
-    group: '',
-    tags: [],
-    template: { preset: 'foundation', fields: {} },
-    checks: { adapters: {} },
-    auth: { mode: 'none' },
-    favorite: false,
-    hidden: false,
-    order: 0
+const iconOptions = [
+  { value: 'Server', label: 'Server', icon: Server },
+  { value: 'Globe', label: 'Globe', icon: Globe },
+  { value: 'Filter', label: 'Filter', icon: Filter },
+  { value: 'Shield', label: 'Shield', icon: Shield },
+  { value: 'Box', label: 'Box', icon: Box },
+  { value: 'Cpu', label: 'CPU', icon: Cpu },
+  { value: 'Database', label: 'Database', icon: Database },
+  { value: 'Monitor', label: 'Monitor', icon: Monitor },
+  { value: 'Wifi', label: 'Wifi', icon: Wifi },
+  { value: 'Lock', label: 'Lock', icon: Lock },
+  { value: 'Settings', label: 'Settings', icon: Settings },
+]
+
+export function ServiceForm({ service, groups, onSave, onCancel }: ServiceFormProps) {
+  const [formData, setFormData] = useState<Service>({
+    id: service?.id || uuidv4(),
+    name: service?.name || '',
+    url: service?.url || '',
+    icon: service?.icon || 'Box',
+    group: service?.group || groups[0]?.name || '',
+    tags: service?.tags || [],
+    vlan: service?.vlan || undefined,
+    description: service?.description || '',
+    health: service?.health || undefined,
+    favorite: service?.favorite || false,
+    hidden: service?.hidden || false,
+    order: service?.order || 0,
   })
 
-  const [selectedPreset, setSelectedPreset] = useState<string>('generic')
-  const [validationErrors, setValidationErrors] = useState<string[]>([])
-  const [isTesting, setIsTesting] = useState(false)
-
-  const presets = getAllPresets()
-  const categories = getAllCategories()
-  const selectedPresetData = presets.find(p => p.id === selectedPreset)
-
-  useEffect(() => {
-    if (service) {
-      setFormData(service)
-      setSelectedPreset(service.type)
-    }
-  }, [service])
-
-  const handlePresetChange = (presetId: string) => {
-    setSelectedPreset(presetId)
-    const preset = presets.find(p => p.id === presetId)
-    if (preset) {
-      const newService = createServiceFromPreset(presetId, formData.instanceId || 'main', {
-        id: formData.id,
-        instanceId: formData.instanceId,
-        name: formData.name,
-        url: formData.url,
-        group: formData.group,
-        tags: formData.tags,
-        vlan: formData.vlan,
-        order: formData.order
-      })
-      setFormData(newService)
-    }
-  }
+  const [tagInput, setTagInput] = useState('')
+  const [healthEnabled, setHealthEnabled] = useState(!!service?.health)
 
   const handleInputChange = (field: keyof Service, value: any) => {
     setFormData(prev => ({
@@ -97,520 +71,314 @@ export function ServiceForm({ service, onSave, onCancel, onTest }: ServiceFormPr
     }))
   }
 
-  const handleAdapterToggle = (adapterType: string, enabled: boolean) => {
+  const handleTagsChange = (tags: string[]) => {
     setFormData(prev => ({
       ...prev,
-      checks: {
-        ...prev.checks,
-        adapters: {
-          ...prev.checks?.adapters,
-          [adapterType]: {
-            ...prev.checks?.adapters?.[adapterType],
-            enabled
-          }
-        }
-      }
+      tags
     }))
   }
 
-  const handleAdapterConfigChange = (adapterType: string, field: string, value: any) => {
-    setFormData(prev => ({
-      ...prev,
-      checks: {
-        ...prev.checks,
-        adapters: {
-          ...prev.checks?.adapters,
-          [adapterType]: {
-            ...prev.checks?.adapters?.[adapterType],
-            [field]: value
-          }
-        }
-      }
-    }))
-  }
-
-  const handleAuthModeChange = (mode: AuthMode) => {
-    setFormData(prev => ({
-      ...prev,
-      auth: {
-        ...prev.auth,
-        mode,
-        basic: mode === 'basic' ? { username: '', password: '' } : undefined,
-        jwt: mode === 'jwt' ? { token: '' } : undefined,
-        header_forward: mode === 'header_forward' ? { headerName: 'X-Forwarded-User' } : undefined
-      }
-    }))
-  }
-
-  const handleSave = () => {
-    const validation = validateService(formData)
-    if (!validation.valid) {
-      setValidationErrors(validation.errors)
-      toast({
-        title: 'Validierungsfehler',
-        description: validation.errors.join(', '),
-        variant: 'destructive'
-      })
-      return
-    }
-
-    setValidationErrors([])
-    onSave(formData)
-  }
-
-  const handleTest = async () => {
-    if (!onTest) return
-
-    setIsTesting(true)
-    try {
-      await onTest(formData)
-      toast({
-        title: 'Test erfolgreich',
-        description: 'Service ist erreichbar und konfiguriert',
-        variant: 'default'
-      })
-    } catch (error) {
-      toast({
-        title: 'Test fehlgeschlagen',
-        description: error instanceof Error ? error.message : 'Unbekannter Fehler',
-        variant: 'destructive'
-      })
-    } finally {
-      setIsTesting(false)
+  const addTag = () => {
+    if (tagInput.trim() && !formData.tags.includes(tagInput.trim())) {
+      handleTagsChange([...formData.tags, tagInput.trim()])
+      setTagInput('')
     }
   }
 
-  const availableAdapters = selectedPresetData?.adapters || []
+  const removeTag = (tagToRemove: string) => {
+    handleTagsChange(formData.tags.filter(tag => tag !== tagToRemove))
+  }
+
+  const handleHealthChange = (field: string, value: any) => {
+    setFormData(prev => ({
+      ...prev,
+      health: {
+        ...prev.health,
+        [field]: value
+      } as any
+    }))
+  }
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    const serviceToSave: Service = {
+      ...formData,
+      health: healthEnabled ? formData.health : undefined
+    }
+    
+    onSave(serviceToSave)
+  }
+
+  const selectedIcon = iconOptions.find(icon => icon.value === formData.icon)
 
   return (
     <div className="space-y-6">
-      {/* Validation Errors */}
-      {validationErrors.length > 0 && (
-        <Card className="border-red-200 bg-red-50">
-          <CardContent className="pt-6">
-            <div className="flex items-center space-x-2 text-red-600">
-              <AlertCircle className="h-4 w-4" />
-              <span className="font-medium">Validierungsfehler:</span>
-            </div>
-            <ul className="mt-2 list-disc list-inside text-sm text-red-600">
-              {validationErrors.map((error, index) => (
-                <li key={index}>{error}</li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
-      )}
+      {/* Header */}
+      <div className="flex items-center space-x-4">
+        <Button variant="ghost" size="icon" onClick={onCancel}>
+          <ArrowLeft className="h-4 w-4" />
+        </Button>
+        <div>
+          <h2 className="text-2xl font-bold">
+            {service ? 'Service bearbeiten' : 'Neuer Service'}
+          </h2>
+          <p className="text-muted-foreground">
+            {service ? 'Bearbeiten Sie die Service-Eigenschaften' : 'Erstellen Sie einen neuen Service'}
+          </p>
+        </div>
+      </div>
 
-      <Tabs defaultValue="basic" className="space-y-6">
-        <TabsList>
-          <TabsTrigger value="basic">Grundlagen</TabsTrigger>
-          <TabsTrigger value="adapters">Adapter</TabsTrigger>
-          <TabsTrigger value="auth">Authentifizierung</TabsTrigger>
-          <TabsTrigger value="advanced">Erweitert</TabsTrigger>
-        </TabsList>
-
-        {/* Basic Settings */}
-        <TabsContent value="basic" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <Settings className="h-5 w-5" />
-                <span>Grundlegende Einstellungen</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="preset">Service-Typ</Label>
-                  <Select value={selectedPreset} onValueChange={handlePresetChange}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Service-Typ wählen" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {categories.map(category => (
-                        <div key={category.id}>
-                          <div className="px-2 py-1.5 text-sm font-medium text-muted-foreground">
-                            {category.name}
-                          </div>
-                          {getPresetsByCategory(category.id).map(preset => (
-                            <SelectItem key={preset.id} value={preset.id}>
-                              <div className="flex items-center space-x-2">
-                                <span>{preset.name}</span>
-                                {preset.adapters.length > 0 && (
-                                  <Badge variant="secondary" className="text-xs">
-                                    {preset.adapters.length} Adapter
-                                  </Badge>
-                                )}
-                              </div>
-                            </SelectItem>
-                          ))}
-                        </div>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="instanceId">Instanz-ID</Label>
-                  <Input
-                    id="instanceId"
-                    value={formData.instanceId}
-                    onChange={(e) => handleInputChange('instanceId', e.target.value)}
-                    placeholder="z.B. main, backup, prod"
-                  />
-                </div>
-              </div>
-
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Basic Information */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Grundinformationen</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="name">Name</Label>
+                <Label htmlFor="name">Name *</Label>
                 <Input
                   id="name"
                   value={formData.name}
                   onChange={(e) => handleInputChange('name', e.target.value)}
-                  placeholder="Service-Name"
+                  placeholder="Service Name"
+                  required
                 />
               </div>
-
+              
               <div className="space-y-2">
-                <Label htmlFor="url">URL</Label>
+                <Label htmlFor="url">URL *</Label>
                 <Input
                   id="url"
+                  type="url"
                   value={formData.url}
                   onChange={(e) => handleInputChange('url', e.target.value)}
-                  placeholder="https://service.example.com"
+                  placeholder="https://example.com"
+                  required
                 />
               </div>
+            </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="group">Gruppe</Label>
-                  <Input
-                    id="group"
-                    value={formData.group}
-                    onChange={(e) => handleInputChange('group', e.target.value)}
-                    placeholder="Gruppe"
-                  />
-                </div>
+            <div className="space-y-2">
+              <Label htmlFor="description">Beschreibung</Label>
+              <Input
+                id="description"
+                value={formData.description}
+                onChange={(e) => handleInputChange('description', e.target.value)}
+                placeholder="Kurze Beschreibung des Services"
+              />
+            </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="vlan">VLAN</Label>
-                  <Input
-                    id="vlan"
-                    type="number"
-                    value={formData.vlan || ''}
-                    onChange={(e) => handleInputChange('vlan', e.target.value ? parseInt(e.target.value) : undefined)}
-                    placeholder="VLAN-Nummer"
-                  />
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="group">Gruppe</Label>
+                <select
+                  id="group"
+                  value={formData.group}
+                  onChange={(e) => handleInputChange('group', e.target.value)}
+                  className="w-full px-3 py-2 border rounded-md"
+                >
+                  {groups.map((group) => (
+                    <option key={group.name} value={group.name}>
+                      {group.name}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="tags">Tags (kommagetrennt)</Label>
+                <Label htmlFor="vlan">VLAN</Label>
                 <Input
-                  id="tags"
-                  value={formData.tags.join(', ')}
-                  onChange={(e) => handleInputChange('tags', e.target.value.split(',').map(t => t.trim()).filter(t => t))}
-                  placeholder="tag1, tag2, tag3"
-                />
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* Adapters */}
-        <TabsContent value="adapters" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <Activity className="h-5 w-5" />
-                <span>API-Adapter</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {availableAdapters.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">
-                  <Activity className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p>Keine Adapter für diesen Service-Typ verfügbar</p>
-                </div>
-              ) : (
-                availableAdapters.map(adapterType => {
-                  const adapterConfig = formData.checks?.adapters?.[adapterType]
-                  const isEnabled = adapterConfig?.enabled || false
-
-                  return (
-                    <Card key={adapterType} className="border-l-4 border-l-blue-500">
-                      <CardContent className="pt-6">
-                        <div className="flex items-center justify-between mb-4">
-                          <div className="flex items-center space-x-2">
-                            <h3 className="font-medium capitalize">{adapterType}</h3>
-                            <Badge variant={isEnabled ? 'default' : 'secondary'}>
-                              {isEnabled ? 'Aktiviert' : 'Deaktiviert'}
-                            </Badge>
-                          </div>
-                          <Switch
-                            checked={isEnabled}
-                            onCheckedChange={(checked) => handleAdapterToggle(adapterType, checked)}
-                          />
-                        </div>
-
-                        {isEnabled && (
-                          <div className="space-y-4">
-                            <div className="space-y-2">
-                              <Label htmlFor={`${adapterType}-baseUrl`}>Base URL</Label>
-                              <Input
-                                id={`${adapterType}-baseUrl`}
-                                value={adapterConfig?.baseUrl || ''}
-                                onChange={(e) => handleAdapterConfigChange(adapterType, 'baseUrl', e.target.value)}
-                                placeholder="https://api.example.com"
-                              />
-                            </div>
-
-                            {/* Adapter-specific fields */}
-                            {adapterType === 'proxmox' && (
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                  <Label htmlFor="proxmox-tokenId">Token ID</Label>
-                                  <Input
-                                    id="proxmox-tokenId"
-                                    value={adapterConfig?.tokenId || ''}
-                                    onChange={(e) => handleAdapterConfigChange(adapterType, 'tokenId', e.target.value)}
-                                    placeholder="dashboard@pve!readonly"
-                                  />
-                                </div>
-                                <div className="space-y-2">
-                                  <Label htmlFor="proxmox-tokenSecret">Token Secret</Label>
-                                  <Input
-                                    id="proxmox-tokenSecret"
-                                    type="password"
-                                    value={adapterConfig?.tokenSecret || ''}
-                                    onChange={(e) => handleAdapterConfigChange(adapterType, 'tokenSecret', e.target.value)}
-                                    placeholder="Token Secret"
-                                  />
-                                </div>
-                              </div>
-                            )}
-
-                            {adapterType === 'adguard' && (
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                  <Label htmlFor="adguard-username">Benutzername</Label>
-                                  <Input
-                                    id="adguard-username"
-                                    value={adapterConfig?.username || ''}
-                                    onChange={(e) => handleAdapterConfigChange(adapterType, 'username', e.target.value)}
-                                    placeholder="admin"
-                                  />
-                                </div>
-                                <div className="space-y-2">
-                                  <Label htmlFor="adguard-password">Passwort</Label>
-                                  <Input
-                                    id="adguard-password"
-                                    type="password"
-                                    value={adapterConfig?.password || ''}
-                                    onChange={(e) => handleAdapterConfigChange(adapterType, 'password', e.target.value)}
-                                    placeholder="Passwort"
-                                  />
-                                </div>
-                              </div>
-                            )}
-
-                            {adapterType === 'npm' && (
-                              <div className="space-y-2">
-                                <Label htmlFor="npm-token">API Token</Label>
-                                <Input
-                                  id="npm-token"
-                                  type="password"
-                                  value={adapterConfig?.token || ''}
-                                  onChange={(e) => handleAdapterConfigChange(adapterType, 'token', e.target.value)}
-                                  placeholder="API Token"
-                                />
-                              </div>
-                            )}
-
-                            {/* Test Button */}
-                            <div className="flex justify-end">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                  // Test specific adapter
-                                  toast({
-                                    title: 'Adapter-Test',
-                                    description: `${adapterType} wird getestet...`,
-                                  })
-                                }}
-                              >
-                                <TestTube className="h-4 w-4 mr-2" />
-                                Testen
-                              </Button>
-                            </div>
-                          </div>
-                        )}
-                      </CardContent>
-                    </Card>
-                  )
-                })
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* Authentication */}
-        <TabsContent value="auth" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <Shield className="h-5 w-5" />
-                <span>Authentifizierung</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="authMode">Authentifizierungsmodus</Label>
-                <Select value={formData.auth?.mode || 'none'} onValueChange={handleAuthModeChange}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Authentifizierungsmodus wählen" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none">Keine Authentifizierung</SelectItem>
-                    <SelectItem value="basic">Basic Auth</SelectItem>
-                    <SelectItem value="jwt">JWT Token</SelectItem>
-                    <SelectItem value="header_forward">Header Forward (Authelia/NPM)</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {formData.auth?.mode === 'basic' && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="basic-username">Benutzername</Label>
-                    <Input
-                      id="basic-username"
-                      value={formData.auth.basic?.username || ''}
-                      onChange={(e) => handleInputChange('auth', {
-                        ...formData.auth,
-                        basic: { ...formData.auth?.basic, username: e.target.value }
-                      })}
-                      placeholder="Benutzername"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="basic-password">Passwort</Label>
-                    <Input
-                      id="basic-password"
-                      type="password"
-                      value={formData.auth.basic?.password || ''}
-                      onChange={(e) => handleInputChange('auth', {
-                        ...formData.auth,
-                        basic: { ...formData.auth?.basic, password: e.target.value }
-                      })}
-                      placeholder="Passwort"
-                    />
-                  </div>
-                </div>
-              )}
-
-              {formData.auth?.mode === 'jwt' && (
-                <div className="space-y-2">
-                  <Label htmlFor="jwt-token">JWT Token</Label>
-                  <Input
-                    id="jwt-token"
-                    type="password"
-                    value={formData.auth.jwt?.token || ''}
-                    onChange={(e) => handleInputChange('auth', {
-                      ...formData.auth,
-                      jwt: { ...formData.auth?.jwt, token: e.target.value }
-                    })}
-                    placeholder="JWT Token"
-                  />
-                </div>
-              )}
-
-              {formData.auth?.mode === 'header_forward' && (
-                <div className="space-y-2">
-                  <Label htmlFor="header-name">Header Name</Label>
-                  <Input
-                    id="header-name"
-                    value={formData.auth.header_forward?.headerName || 'X-Forwarded-User'}
-                    onChange={(e) => handleInputChange('auth', {
-                      ...formData.auth,
-                      header_forward: { ...formData.auth?.header_forward, headerName: e.target.value }
-                    })}
-                    placeholder="X-Forwarded-User"
-                  />
-                  <p className="text-sm text-muted-foreground">
-                    Header-Name für die Weiterleitung der Benutzerinformationen (kompatibel mit Authelia/NPM)
-                  </p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* Advanced Settings */}
-        <TabsContent value="advanced" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Erweiterte Einstellungen</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="favorite"
-                  checked={formData.favorite}
-                  onCheckedChange={(checked) => handleInputChange('favorite', checked)}
-                />
-                <Label htmlFor="favorite">Als Favorit markieren</Label>
-              </div>
-
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="hidden"
-                  checked={formData.hidden}
-                  onCheckedChange={(checked) => handleInputChange('hidden', checked)}
-                />
-                <Label htmlFor="hidden">Service verstecken</Label>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="order">Reihenfolge</Label>
-                <Input
-                  id="order"
+                  id="vlan"
                   type="number"
-                  value={formData.order}
-                  onChange={(e) => handleInputChange('order', parseInt(e.target.value) || 0)}
-                  placeholder="0"
+                  value={formData.vlan || ''}
+                  onChange={(e) => handleInputChange('vlan', e.target.value ? parseInt(e.target.value) : undefined)}
+                  placeholder="VLAN Nummer"
                 />
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+            </div>
+          </CardContent>
+        </Card>
 
-      {/* Action Buttons */}
-      <div className="flex justify-between">
-        <div className="flex space-x-2">
-          {onTest && (
-            <Button
-              variant="outline"
-              onClick={handleTest}
-              disabled={isTesting}
-            >
-              <TestTube className="h-4 w-4 mr-2" />
-              {isTesting ? 'Teste...' : 'Testen'}
-            </Button>
-          )}
-        </div>
+        {/* Icon Selection */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Icon</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-4 md:grid-cols-6 gap-3">
+              {iconOptions.map((icon) => {
+                const Icon = icon.icon
+                return (
+                  <button
+                    key={icon.value}
+                    type="button"
+                    onClick={() => handleInputChange('icon', icon.value)}
+                    className={`p-3 border rounded-lg flex flex-col items-center space-y-2 transition-colors ${
+                      formData.icon === icon.value
+                        ? 'border-primary bg-primary/10'
+                        : 'border-border hover:border-primary/50'
+                    }`}
+                  >
+                    <Icon className="h-6 w-6" />
+                    <span className="text-xs">{icon.label}</span>
+                  </button>
+                )
+              })}
+            </div>
+          </CardContent>
+        </Card>
 
-        <div className="flex space-x-2">
-          <Button variant="outline" onClick={onCancel}>
+        {/* Tags */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Tags</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex space-x-2">
+              <Input
+                value={tagInput}
+                onChange={(e) => setTagInput(e.target.value)}
+                placeholder="Tag hinzufügen"
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault()
+                    addTag()
+                  }
+                }}
+              />
+              <Button type="button" onClick={addTag}>
+                Hinzufügen
+              </Button>
+            </div>
+            
+            {formData.tags.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {formData.tags.map((tag) => (
+                  <div
+                    key={tag}
+                    className="flex items-center space-x-1 bg-secondary px-2 py-1 rounded-md text-sm"
+                  >
+                    <span>#{tag}</span>
+                    <button
+                      type="button"
+                      onClick={() => removeTag(tag)}
+                      className="text-muted-foreground hover:text-foreground"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Health Check */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Health Check</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center space-x-2">
+              <Switch
+                checked={healthEnabled}
+                onCheckedChange={setHealthEnabled}
+              />
+              <Label>Health Check aktivieren</Label>
+            </div>
+
+            {healthEnabled && (
+              <div className="space-y-4 pl-6 border-l-2 border-border">
+                <div className="space-y-2">
+                  <Label htmlFor="healthType">Typ</Label>
+                  <select
+                    id="healthType"
+                    value={formData.health?.type || 'http'}
+                    onChange={(e) => handleHealthChange('type', e.target.value)}
+                    className="w-full px-3 py-2 border rounded-md"
+                  >
+                    <option value="http">HTTP</option>
+                    <option value="ping">Ping</option>
+                  </select>
+                </div>
+
+                {formData.health?.type === 'http' ? (
+                  <div className="space-y-2">
+                    <Label htmlFor="healthUrl">Health Check URL</Label>
+                    <Input
+                      id="healthUrl"
+                      type="url"
+                      value={formData.health?.url || ''}
+                      onChange={(e) => handleHealthChange('url', e.target.value)}
+                      placeholder="https://example.com/health"
+                    />
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    <Label htmlFor="healthHost">Host</Label>
+                    <Input
+                      id="healthHost"
+                      value={formData.health?.host || ''}
+                      onChange={(e) => handleHealthChange('host', e.target.value)}
+                      placeholder="example.com"
+                    />
+                  </div>
+                )}
+
+                <div className="space-y-2">
+                  <Label htmlFor="healthInterval">Intervall (Sekunden)</Label>
+                  <Input
+                    id="healthInterval"
+                    type="number"
+                    min="10"
+                    max="3600"
+                    value={formData.health?.interval || 30}
+                    onChange={(e) => handleHealthChange('interval', parseInt(e.target.value))}
+                  />
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Options */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Optionen</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center space-x-2">
+              <Switch
+                checked={formData.favorite}
+                onCheckedChange={(checked) => handleInputChange('favorite', checked)}
+              />
+              <Label>Als Favorit markieren</Label>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <Switch
+                checked={formData.hidden}
+                onCheckedChange={(checked) => handleInputChange('hidden', checked)}
+              />
+              <Label>Verstecken</Label>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Actions */}
+        <div className="flex space-x-4">
+          <Button type="submit" className="flex-1">
+            <Save className="h-4 w-4 mr-2" />
+            {service ? 'Änderungen speichern' : 'Service erstellen'}
+          </Button>
+          <Button type="button" variant="outline" onClick={onCancel}>
             Abbrechen
           </Button>
-          <Button onClick={handleSave}>
-            Speichern
-          </Button>
         </div>
-      </div>
+      </form>
     </div>
   )
 }
