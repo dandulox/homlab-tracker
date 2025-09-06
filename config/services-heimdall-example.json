@@ -1,0 +1,256 @@
+{
+  "services": [
+    {
+      "id": "heimdall-service-001",
+      "type": "generic",
+      "instanceId": "github",
+      "name": "GitHub",
+      "url": "https://github.com",
+      "icon": "Github",
+      "group": "Development",
+      "tags": ["git", "code", "external"],
+      "template": {
+        "preset": "foundation",
+        "fields": {
+          "description": "Code Repository"
+        }
+      },
+      "auth": {
+        "mode": "none"
+      }
+    },
+    {
+      "id": "heimdall-service-002",
+      "type": "generic",
+      "instanceId": "docker-hub",
+      "name": "Docker Hub",
+      "url": "https://hub.docker.com",
+      "icon": "Container",
+      "group": "Development",
+      "tags": ["docker", "containers", "external"],
+      "template": {
+        "preset": "foundation"
+      },
+      "auth": {
+        "mode": "none"
+      }
+    },
+    {
+      "id": "heimdall-service-003",
+      "type": "generic",
+      "instanceId": "stackoverflow",
+      "name": "Stack Overflow",
+      "url": "https://stackoverflow.com",
+      "icon": "HelpCircle",
+      "group": "Development",
+      "tags": ["help", "programming", "external"],
+      "template": {
+        "preset": "foundation"
+      },
+      "auth": {
+        "mode": "none"
+      }
+    },
+    {
+      "id": "heimdall-service-004",
+      "type": "generic",
+      "instanceId": "reddit",
+      "name": "Reddit",
+      "url": "https://reddit.com",
+      "icon": "MessageSquare",
+      "group": "Info",
+      "tags": ["social", "news", "external"],
+      "template": {
+        "preset": "enhanced",
+        "fields": {
+          "subreddit": "homelab"
+        }
+      },
+      "auth": {
+        "mode": "none"
+      }
+    },
+    {
+      "id": "heimdall-service-005",
+      "type": "generic",
+      "instanceId": "youtube",
+      "name": "YouTube",
+      "url": "https://youtube.com",
+      "icon": "Play",
+      "group": "Info",
+      "tags": ["video", "entertainment", "external"],
+      "template": {
+        "preset": "enhanced",
+        "fields": {
+          "channel": "TechWorld"
+        }
+      },
+      "auth": {
+        "mode": "none"
+      }
+    },
+    {
+      "id": "heimdall-service-006",
+      "type": "generic",
+      "instanceId": "netflix",
+      "name": "Netflix",
+      "url": "https://netflix.com",
+      "icon": "Film",
+      "group": "Medien",
+      "tags": ["streaming", "movies", "external"],
+      "template": {
+        "preset": "enhanced"
+      },
+      "auth": {
+        "mode": "none"
+      }
+    },
+    {
+      "id": "heimdall-service-007",
+      "type": "generic",
+      "instanceId": "spotify",
+      "name": "Spotify",
+      "url": "https://spotify.com",
+      "icon": "Music",
+      "group": "Medien",
+      "tags": ["music", "streaming", "external"],
+      "template": {
+        "preset": "enhanced"
+      },
+      "auth": {
+        "mode": "none"
+      }
+    },
+    {
+      "id": "heimdall-service-008",
+      "type": "generic",
+      "instanceId": "gmail",
+      "name": "Gmail",
+      "url": "https://mail.google.com",
+      "icon": "Mail",
+      "group": "Info",
+      "tags": ["email", "communication", "external"],
+      "template": {
+        "preset": "foundation"
+      },
+      "auth": {
+        "mode": "none"
+      }
+    },
+    {
+      "id": "heimdall-service-009",
+      "type": "generic",
+      "instanceId": "calendar",
+      "name": "Google Calendar",
+      "url": "https://calendar.google.com",
+      "icon": "Calendar",
+      "group": "Info",
+      "tags": ["calendar", "scheduling", "external"],
+      "template": {
+        "preset": "enhanced"
+      },
+      "auth": {
+        "mode": "none"
+      }
+    },
+    {
+      "id": "heimdall-service-010",
+      "type": "generic",
+      "instanceId": "drive",
+      "name": "Google Drive",
+      "url": "https://drive.google.com",
+      "icon": "HardDrive",
+      "group": "Info",
+      "tags": ["storage", "files", "external"],
+      "template": {
+        "preset": "foundation"
+      },
+      "auth": {
+        "mode": "none"
+      }
+    },
+    {
+      "id": "heimdall-service-011",
+      "type": "generic",
+      "instanceId": "maps",
+      "name": "Google Maps",
+      "url": "https://maps.google.com",
+      "icon": "Map",
+      "group": "Info",
+      "tags": ["maps", "navigation", "external"],
+      "template": {
+        "preset": "enhanced"
+      },
+      "auth": {
+        "mode": "none"
+      }
+    },
+    {
+      "id": "heimdall-service-012",
+      "type": "generic",
+      "instanceId": "translate",
+      "name": "Google Translate",
+      "url": "https://translate.google.com",
+      "icon": "Languages",
+      "group": "Info",
+      "tags": ["translation", "language", "external"],
+      "template": {
+        "preset": "foundation"
+      },
+      "auth": {
+        "mode": "none"
+      }
+    },
+    {
+      "id": "heimdall-service-013",
+      "type": "generic",
+      "instanceId": "weather",
+      "name": "Weather.com",
+      "url": "https://weather.com",
+      "icon": "Cloud",
+      "group": "Info",
+      "tags": ["weather", "forecast", "external"],
+      "template": {
+        "preset": "enhanced",
+        "fields": {
+          "location": "Bonn, Germany"
+        }
+      },
+      "auth": {
+        "mode": "none"
+      }
+    },
+    {
+      "id": "heimdall-service-014",
+      "type": "generic",
+      "instanceId": "news",
+      "name": "BBC News",
+      "url": "https://bbc.com/news",
+      "icon": "Newspaper",
+      "group": "Info",
+      "tags": ["news", "current-events", "external"],
+      "template": {
+        "preset": "enhanced"
+      },
+      "auth": {
+        "mode": "none"
+      }
+    },
+    {
+      "id": "heimdall-service-015",
+      "type": "generic",
+      "instanceId": "wikipedia",
+      "name": "Wikipedia",
+      "url": "https://wikipedia.org",
+      "icon": "BookOpen",
+      "group": "Info",
+      "tags": ["encyclopedia", "knowledge", "external"],
+      "template": {
+        "preset": "foundation"
+      },
+      "auth": {
+        "mode": "none"
+      }
+    }
+  ]
+}

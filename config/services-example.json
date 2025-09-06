@@ -1,0 +1,431 @@
+{
+  "services": [
+    {
+      "id": "pihole-main-001",
+      "type": "pihole",
+      "instanceId": "dns-main",
+      "name": "Pi-hole (Main)",
+      "url": "http://10.0.20.104/admin",
+      "icon": "Shield",
+      "group": "Netzwerk",
+      "tags": ["dns", "adblock", "primary"],
+      "vlan": 20,
+      "checks": {
+        "ping": {
+          "enabled": true,
+          "host": "10.0.20.104",
+          "intervalSec": 30
+        },
+        "http": {
+          "enabled": true,
+          "url": "http://10.0.20.104/admin",
+          "intervalSec": 60,
+          "expectStatus": 200
+        },
+        "adapters": {
+          "pihole": {
+            "enabled": true,
+            "baseUrl": "http://10.0.20.104/admin",
+            "token": "env:PIHOLE_TOKEN_MAIN",
+            "version": "v5"
+          }
+        }
+      },
+      "auth": {
+        "mode": "header_forward",
+        "header_forward": {
+          "headerName": "X-Forwarded-User"
+        }
+      }
+    },
+    {
+      "id": "pihole-backup-002",
+      "type": "pihole",
+      "instanceId": "dns-backup",
+      "name": "Pi-hole (Backup)",
+      "url": "http://10.0.40.104/admin",
+      "icon": "Shield",
+      "group": "Netzwerk",
+      "tags": ["dns", "adblock", "backup"],
+      "vlan": 40,
+      "checks": {
+        "ping": {
+          "enabled": true,
+          "host": "10.0.40.104",
+          "intervalSec": 30
+        },
+        "adapters": {
+          "pihole": {
+            "enabled": false,
+            "baseUrl": "http://10.0.40.104/admin",
+            "version": "v5"
+          }
+        }
+      },
+      "auth": {
+        "mode": "none"
+      }
+    },
+    {
+      "id": "portainer-lab-003",
+      "type": "portainer",
+      "instanceId": "lab",
+      "name": "Portainer Lab",
+      "url": "https://portainer.lan",
+      "icon": "Container",
+      "group": "Infra",
+      "tags": ["docker", "containers", "management"],
+      "checks": {
+        "ping": {
+          "enabled": true,
+          "host": "portainer.lan",
+          "intervalSec": 60
+        },
+        "adapters": {
+          "portainer": {
+            "enabled": true,
+            "baseUrl": "https://portainer.lan/api",
+            "apiKey": "env:PORTAINER_API_KEY"
+          }
+        }
+      },
+      "auth": {
+        "mode": "jwt",
+        "jwt": {
+          "token": "env:PORTAINER_JWT"
+        }
+      }
+    },
+    {
+      "id": "prometheus-metrics-004",
+      "type": "prometheus",
+      "instanceId": "metrics",
+      "name": "Prometheus",
+      "url": "http://10.0.30.50",
+      "icon": "Activity",
+      "group": "Monitoring",
+      "tags": ["metrics", "monitoring", "time-series"],
+      "vlan": 30,
+      "checks": {
+        "ping": {
+          "enabled": true,
+          "host": "10.0.30.50",
+          "intervalSec": 30
+        },
+        "adapters": {
+          "prometheus": {
+            "enabled": true,
+            "baseUrl": "http://10.0.30.50",
+            "query": "up"
+          }
+        }
+      },
+      "auth": {
+        "mode": "none"
+      }
+    },
+    {
+      "id": "openweather-home-005",
+      "type": "openweathermap",
+      "instanceId": "home",
+      "name": "Weather Home",
+      "url": "https://openweathermap.org",
+      "icon": "Cloud",
+      "group": "Info",
+      "tags": ["weather", "api", "external"],
+      "checks": {
+        "adapters": {
+          "openweathermap": {
+            "enabled": true,
+            "apiKey": "env:OWM_API_KEY",
+            "city": "Bonn",
+            "units": "metric"
+          }
+        }
+      },
+      "auth": {
+        "mode": "none"
+      }
+    },
+    {
+      "id": "qbittorrent-dl1-006",
+      "type": "qbittorrent",
+      "instanceId": "dl-1",
+      "name": "qBittorrent",
+      "url": "http://10.0.20.60",
+      "icon": "Download",
+      "group": "Medien",
+      "tags": ["torrent", "download", "media"],
+      "vlan": 20,
+      "template": {
+        "preset": "enhanced",
+        "fields": {
+          "category": "movies",
+          "priority": "high"
+        }
+      },
+      "checks": {
+        "ping": {
+          "enabled": true,
+          "host": "10.0.20.60",
+          "intervalSec": 30
+        },
+        "http": {
+          "enabled": true,
+          "url": "http://10.0.20.60",
+          "intervalSec": 60,
+          "expectStatus": 200
+        }
+      },
+      "auth": {
+        "mode": "basic",
+        "basic": {
+          "username": "admin",
+          "password": "env:QBIT_PASS"
+        }
+      }
+    },
+    {
+      "id": "qbittorrent-dl2-007",
+      "type": "qbittorrent",
+      "instanceId": "dl-2",
+      "name": "qBittorrent (Backup)",
+      "url": "http://10.0.20.61",
+      "icon": "Download",
+      "group": "Medien",
+      "tags": ["torrent", "download", "media", "backup"],
+      "vlan": 20,
+      "template": {
+        "preset": "foundation"
+      },
+      "checks": {
+        "ping": {
+          "enabled": true,
+          "host": "10.0.20.61",
+          "intervalSec": 30
+        }
+      },
+      "auth": {
+        "mode": "basic",
+        "basic": {
+          "username": "admin",
+          "password": "env:QBIT_PASS_2"
+        }
+      }
+    },
+    {
+      "id": "radarr-movies-008",
+      "type": "radarr",
+      "instanceId": "movies",
+      "name": "Radarr (Movies)",
+      "url": "http://10.0.20.70",
+      "icon": "Film",
+      "group": "Medien",
+      "tags": ["movies", "automation", "sonarr"],
+      "vlan": 20,
+      "checks": {
+        "ping": {
+          "enabled": true,
+          "host": "10.0.20.70",
+          "intervalSec": 60
+        },
+        "adapters": {
+          "lidarr": {
+            "enabled": true,
+            "baseUrl": "http://10.0.20.70/api",
+            "apiKey": "env:RADARR_API_KEY"
+          }
+        }
+      },
+      "auth": {
+        "mode": "header_forward"
+      }
+    },
+    {
+      "id": "sonarr-tv-009",
+      "type": "sonarr",
+      "instanceId": "tv",
+      "name": "Sonarr (TV Shows)",
+      "url": "http://10.0.20.71",
+      "icon": "Tv",
+      "group": "Medien",
+      "tags": ["tv", "automation", "sonarr"],
+      "vlan": 20,
+      "checks": {
+        "ping": {
+          "enabled": true,
+          "host": "10.0.20.71",
+          "intervalSec": 60
+        }
+      },
+      "auth": {
+        "mode": "header_forward"
+      }
+    },
+    {
+      "id": "lidarr-music-010",
+      "type": "lidarr",
+      "instanceId": "music",
+      "name": "Lidarr (Music)",
+      "url": "http://10.0.20.72",
+      "icon": "Music",
+      "group": "Medien",
+      "tags": ["music", "automation", "lidarr"],
+      "vlan": 20,
+      "checks": {
+        "ping": {
+          "enabled": true,
+          "host": "10.0.20.72",
+          "intervalSec": 60
+        },
+        "adapters": {
+          "lidarr": {
+            "enabled": true,
+            "baseUrl": "http://10.0.20.72/api",
+            "apiKey": "env:LIDARR_API_KEY"
+          }
+        }
+      },
+      "auth": {
+        "mode": "header_forward"
+      }
+    },
+    {
+      "id": "nextcloud-main-011",
+      "type": "nextcloud",
+      "instanceId": "main",
+      "name": "Nextcloud",
+      "url": "https://cloud.lan",
+      "icon": "Cloud",
+      "group": "Infra",
+      "tags": ["cloud", "storage", "sync"],
+      "checks": {
+        "ping": {
+          "enabled": true,
+          "host": "cloud.lan",
+          "intervalSec": 60
+        },
+        "http": {
+          "enabled": true,
+          "url": "https://cloud.lan/status.php",
+          "intervalSec": 120,
+          "expectStatus": 200
+        }
+      },
+      "auth": {
+        "mode": "header_forward"
+      }
+    },
+    {
+      "id": "proxmox-main-012",
+      "type": "proxmox",
+      "instanceId": "main",
+      "name": "Proxmox VE",
+      "url": "https://10.0.10.10:8006",
+      "icon": "Server",
+      "group": "Infra",
+      "tags": ["virtualization", "vms", "containers"],
+      "vlan": 10,
+      "checks": {
+        "ping": {
+          "enabled": true,
+          "host": "10.0.10.10",
+          "intervalSec": 30
+        },
+        "http": {
+          "enabled": true,
+          "url": "https://10.0.10.10:8006",
+          "intervalSec": 60,
+          "expectStatus": 200
+        }
+      },
+      "auth": {
+        "mode": "basic",
+        "basic": {
+          "username": "root@pam",
+          "password": "env:PROXMOX_PASSWORD"
+        }
+      }
+    },
+    {
+      "id": "nginxpm-main-013",
+      "type": "nginxpm",
+      "instanceId": "main",
+      "name": "Nginx Proxy Manager",
+      "url": "https://npm.lan",
+      "icon": "Globe",
+      "group": "Netzwerk",
+      "tags": ["proxy", "ssl", "reverse-proxy"],
+      "checks": {
+        "ping": {
+          "enabled": true,
+          "host": "npm.lan",
+          "intervalSec": 60
+        },
+        "http": {
+          "enabled": true,
+          "url": "https://npm.lan",
+          "intervalSec": 120,
+          "expectStatus": 200
+        }
+      },
+      "auth": {
+        "mode": "header_forward"
+      }
+    },
+    {
+      "id": "adguard-home-014",
+      "type": "adguard",
+      "instanceId": "main",
+      "name": "AdGuard Home",
+      "url": "http://10.0.20.105",
+      "icon": "Shield",
+      "group": "Netzwerk",
+      "tags": ["dns", "adblock", "privacy"],
+      "vlan": 20,
+      "checks": {
+        "ping": {
+          "enabled": true,
+          "host": "10.0.20.105",
+          "intervalSec": 30
+        },
+        "http": {
+          "enabled": true,
+          "url": "http://10.0.20.105",
+          "intervalSec": 60,
+          "expectStatus": 200
+        }
+      },
+      "auth": {
+        "mode": "none"
+      }
+    },
+    {
+      "id": "paperless-ngx-015",
+      "type": "paperless",
+      "instanceId": "main",
+      "name": "Paperless-ngx",
+      "url": "http://10.0.20.80",
+      "icon": "FileText",
+      "group": "Infra",
+      "tags": ["documents", "ocr", "archive"],
+      "vlan": 20,
+      "checks": {
+        "ping": {
+          "enabled": true,
+          "host": "10.0.20.80",
+          "intervalSec": 60
+        },
+        "http": {
+          "enabled": true,
+          "url": "http://10.0.20.80/api/",
+          "intervalSec": 120,
+          "expectStatus": 200
+        }
+      },
+      "auth": {
+        "mode": "header_forward"
+      }
+    }
+  ]
+}
