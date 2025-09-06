@@ -4,17 +4,21 @@ theme: "system"
 auth:
   enabled: false
 groups:
-  - name: "Core"
+  - id: "550e8400-e29b-41d4-a716-446655440010"
+    name: "Core"
     icon: "Server"
     order: 0
-  - name: "Netzwerk"
+  - id: "550e8400-e29b-41d4-a716-446655440011"
+    name: "Netzwerk"
     icon: "Globe"
     order: 1
-  - name: "Apps"
+  - id: "550e8400-e29b-41d4-a716-446655440012"
+    name: "Apps"
     icon: "Boxes"
     order: 2
 services:
-  - name: "Proxmox"
+  - id: "550e8400-e29b-41d4-a716-446655440001"
+    name: "Proxmox"
     url: "https://proxmox.lan:8006"
     icon: "Cpu"
     group: "Core"
@@ -25,7 +29,8 @@ services:
       url: "https://proxmox.lan:8006/api2/json/version"
       interval: 30
     order: 0
-  - name: "pfSense"
+  - id: "550e8400-e29b-41d4-a716-446655440002"
+    name: "pfSense"
     url: "https://pfsense.lan"
     icon: "Shield"
     group: "Netzwerk"
@@ -36,30 +41,34 @@ services:
       host: "pfsense.lan"
       interval: 30
     order: 1
-  - name: "AdGuard"
+  - id: "550e8400-e29b-41d4-a716-446655440003"
+    name: "AdGuard"
     url: "http://10.0.20.103"
     icon: "Filter"
     group: "Netzwerk"
     tags: ["dns", "adblock"]
     vlan: 20
     order: 2
-  - name: "NPM"
+  - id: "550e8400-e29b-41d4-a716-446655440004"
+    name: "NPM"
     url: "http://10.0.20.102"
     icon: "Globe"
     group: "Netzwerk"
     tags: ["reverse-proxy", "ssl"]
     vlan: 20
     order: 3
-  - name: "Portainer"
+  - id: "550e8400-e29b-41d4-a716-446655440005"
+    name: "Portainer"
     url: "http://10.0.20.101:9000"
-    icon: "Container"
+    icon: "Server"
     group: "Apps"
     tags: ["docker", "container"]
     vlan: 20
     order: 4
-  - name: "Grafana"
+  - id: "550e8400-e29b-41d4-a716-446655440006"
+    name: "Grafana"
     url: "http://10.0.20.100:3000"
-    icon: "BarChart"
+    icon: "Monitor"
     group: "Apps"
     tags: ["monitoring", "metrics"]
     vlan: 20

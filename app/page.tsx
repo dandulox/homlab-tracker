@@ -30,12 +30,13 @@ const mockConfig: Config = {
   theme: 'system',
   auth: { enabled: false },
   groups: [
-    { name: 'Core', icon: 'Server', order: 0 },
-    { name: 'Netzwerk', icon: 'Globe', order: 1 },
-    { name: 'Apps', icon: 'Boxes', order: 2 },
+    { id: '550e8400-e29b-41d4-a716-446655440010', name: 'Core', icon: 'Server', order: 0 },
+    { id: '550e8400-e29b-41d4-a716-446655440011', name: 'Netzwerk', icon: 'Globe', order: 1 },
+    { id: '550e8400-e29b-41d4-a716-446655440012', name: 'Apps', icon: 'Boxes', order: 2 },
   ],
   services: [
     {
+      id: '550e8400-e29b-41d4-a716-446655440001',
       name: 'Proxmox',
       url: 'https://proxmox.lan:8006',
       icon: 'Cpu',
@@ -46,6 +47,7 @@ const mockConfig: Config = {
       order: 0,
     },
     {
+      id: '550e8400-e29b-41d4-a716-446655440002',
       name: 'pfSense',
       url: 'https://pfsense.lan',
       icon: 'Shield',
@@ -56,6 +58,7 @@ const mockConfig: Config = {
       order: 1,
     },
     {
+      id: '550e8400-e29b-41d4-a716-446655440003',
       name: 'AdGuard',
       url: 'http://10.0.20.103',
       icon: 'Filter',
@@ -65,6 +68,7 @@ const mockConfig: Config = {
       order: 2,
     },
     {
+      id: '550e8400-e29b-41d4-a716-446655440004',
       name: 'NPM',
       url: 'http://10.0.20.102',
       icon: 'Globe',
