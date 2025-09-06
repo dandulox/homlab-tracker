@@ -1,6 +1,6 @@
-# Homelab Dashboard
+# Labora
 
-Ein modernes, selbst-hostbares Homelab-Dashboard im Stil von Heimdall/Homer, aber mit erweiterten Funktionen und einem zeitgemäßen Design.
+Labora ist ein modernes, selbst-hostbares Homelab-Dashboard im Stil von Heimdall/Homer, aber mit erweiterten Funktionen und einem zeitgemäßen Design.
 
 ## ✨ Features
 
@@ -19,8 +19,8 @@ Ein modernes, selbst-hostbares Homelab-Dashboard im Stil von Heimdall/Homer, abe
 
 1. **Repository klonen**
    ```bash
-   git clone https://github.com/your-username/homelab-dashboard.git
-   cd homelab-dashboard
+   git clone https://github.com/your-username/labora.git
+   cd labora
    ```
 
 2. **Konfiguration anpassen**
@@ -64,8 +64,8 @@ Ein modernes, selbst-hostbares Homelab-Dashboard im Stil von Heimdall/Homer, abe
 Die Hauptkonfiguration erfolgt über `config/config.yml`:
 
 ```yaml
-title: "Homelab Dashboard"
-description: "Übersicht Dienste & Status"
+title: "Labora"
+description: "Homelab Dashboard - Übersicht Dienste & Status"
 theme: "system"  # light | dark | system
 auth:
   enabled: false
@@ -205,7 +205,7 @@ services:
 
 1. **NPM-Proxy-Host erstellen**:
    - Domain: `dashboard.lan`
-   - Forward Hostname/IP: `homelab-dashboard`
+   - Forward Hostname/IP: `labora`
    - Forward Port: `3000`
    - SSL: Aktiviert
 
@@ -215,7 +215,7 @@ services:
      - npm-network
    
    services:
-     homelab-dashboard:
+     labora:
        networks:
          - npm-network
    ```
@@ -312,10 +312,10 @@ Dieses Projekt steht unter der MIT-Lizenz. Siehe [LICENSE](LICENSE) für Details
 
 Bei Fragen oder Problemen:
 
-1. Überprüfe die [Issues](https://github.com/your-username/homelab-dashboard/issues)
+1. Überprüfe die [Issues](https://github.com/your-username/labora/issues)
 2. Erstelle ein neues Issue mit detaillierter Beschreibung
-3. Für Diskussionen nutze die [Discussions](https://github.com/your-username/homelab-dashboard/discussions)
+3. Für Diskussionen nutze die [Discussions](https://github.com/your-username/labora/discussions)
 
 ---
 
-**Viel Spaß mit deinem Homelab Dashboard! 🚀**
+**Viel Spaß mit Labora! 🚀**

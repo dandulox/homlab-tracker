@@ -191,7 +191,7 @@ export default function AdminPage() {
               <ArrowLeft className="h-4 w-4" />
             </Button>
             <div>
-              <h1 className="text-xl font-bold">Administration</h1>
+              <h1 className="text-xl font-bold">Labora Administration</h1>
               <p className="text-sm text-muted-foreground">Konfiguration verwalten</p>
             </div>
           </div>

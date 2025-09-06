@@ -9,7 +9,7 @@ services:
       - "3000:3000"
     volumes:
       - ./config:/config:ro
-      - homelab-config:/app/config
+      - labora-config:/app/config
     environment:
       - NODE_ENV=production
       - CONFIG_PATH=/config/config.yml
@@ -27,7 +27,7 @@ services:
       # - NPM_TOKEN=your-npm-token
       # - JWT_SECRET=your-jwt-secret
     networks:
-      - homelab
+      - labora
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
       interval: 30s
@@ -36,8 +36,8 @@ services:
       start_period: 40s
 
 volumes:
-  homelab-config:
+  labora-config:
 
 networks:
-  homelab:
+  labora:
     driver: bridge

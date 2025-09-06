@@ -1,7 +1,7 @@
-// Service Worker für Homelab Dashboard
-const CACHE_NAME = 'homelab-dashboard-v1'
-const STATIC_CACHE = 'homelab-static-v1'
-const DYNAMIC_CACHE = 'homelab-dynamic-v1'
+// Service Worker für Labora
+const CACHE_NAME = 'labora-v1'
+const STATIC_CACHE = 'labora-static-v1'
+const DYNAMIC_CACHE = 'labora-dynamic-v1'
 
 // Dateien die gecacht werden sollen
 const STATIC_FILES = [
@@ -113,7 +113,7 @@ async function handleApiRequest(request) {
     if (url.pathname === '/api/config') {
       return new Response(
         JSON.stringify({
-          title: 'Homelab Dashboard',
+          title: 'Labora',
           description: 'Offline Modus',
           theme: 'system',
           auth: { enabled: false },
