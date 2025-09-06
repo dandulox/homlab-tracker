@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  labora:
+    build: .
+    container_name: labora
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./config:/config:ro
+      - homelab-config:/app/config
+    environment:
+      - NODE_ENV=production
+      - CONFIG_PATH=/config/config.yml
+      # Widget API credentials (optional)
+      # - PROXMOX_BASE_URL=https://proxmox.lan:8006
+      # - PROXMOX_TOKEN_ID=dashboard@pve!readonly
+      # - PROXMOX_TOKEN_SECRET=your-token-secret
+      # - PFSENSE_BASE_URL=https://pfsense.lan
+      # - PFSENSE_API_KEY=your-api-key
+      # - PFSENSE_API_SECRET=your-api-secret
+      # - ADGUARD_BASE_URL=http://10.0.20.103
+      # - ADGUARD_USERNAME=admin
+      # - ADGUARD_PASSWORD=your-password
+      # - NPM_BASE_URL=http://10.0.20.102
+      # - NPM_TOKEN=your-npm-token
+      # - JWT_SECRET=your-jwt-secret
+    networks:
+      - homelab
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  homelab-config:
+
+networks:
+  homelab:
+    driver: bridge
