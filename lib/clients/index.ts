@@ -4,6 +4,10 @@ export * from './proxmox'
 export * from './adguard'
 export * from './pihole'
 export * from './npm'
+export * from './portainer'
+export * from './jellyfin'
+export * from './sonarr'
+export * from './uptimekuma'
 
 // Adapter factory function
 import { BaseAdapter, type AdapterConfig } from './base'
@@ -11,8 +15,12 @@ import { ProxmoxAdapter, type ProxmoxConfig } from './proxmox'
 import { AdGuardAdapter, type AdGuardConfig } from './adguard'
 import { PiHoleAdapter, type PiHoleConfig } from './pihole'
 import { NPMAdapter, type NPMConfig } from './npm'
+import { PortainerAdapter, type PortainerConfig } from './portainer'
+import { JellyfinAdapter, type JellyfinConfig } from './jellyfin'
+import { SonarrAdapter, type SonarrConfig } from './sonarr'
+import { UptimeKumaAdapter, type UptimeKumaConfig } from './uptimekuma'
 
-export type AdapterType = 'proxmox' | 'adguard' | 'pihole' | 'npm'
+export type AdapterType = 'proxmox' | 'adguard' | 'pihole' | 'npm' | 'portainer' | 'jellyfin' | 'sonarr' | 'uptimekuma'
 
 export function createAdapter(
   type: AdapterType,
@@ -27,6 +35,14 @@ export function createAdapter(
       return new PiHoleAdapter(config as PiHoleConfig)
     case 'npm':
       return new NPMAdapter(config as NPMConfig)
+    case 'portainer':
+      return new PortainerAdapter(config as PortainerConfig)
+    case 'jellyfin':
+      return new JellyfinAdapter(config as JellyfinConfig)
+    case 'sonarr':
+      return new SonarrAdapter(config as SonarrConfig)
+    case 'uptimekuma':
+      return new UptimeKumaAdapter(config as UptimeKumaConfig)
     default:
       throw new Error(`Unknown adapter type: ${type}`)
   }
@@ -38,4 +54,8 @@ export const ADAPTER_REGISTRY = {
   adguard: AdGuardAdapter,
   pihole: PiHoleAdapter,
   npm: NPMAdapter,
+  portainer: PortainerAdapter,
+  jellyfin: JellyfinAdapter,
+  sonarr: SonarrAdapter,
+  uptimekuma: UptimeKumaAdapter,
 } as const
