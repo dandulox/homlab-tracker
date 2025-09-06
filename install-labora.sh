@@ -97,6 +97,12 @@ else
     log "Docker ist bereits installiert"
 fi
 
+# Alte docker-compose Version entfernen (falls vorhanden)
+if command -v docker-compose &> /dev/null; then
+    log "Entferne alte docker-compose Version..."
+    apt-get remove -y docker-compose
+fi
+
 # Docker Compose installieren (falls nicht vorhanden)
 if ! docker compose version &> /dev/null; then
     log "Installiere Docker Compose..."

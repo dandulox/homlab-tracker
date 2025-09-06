@@ -21,6 +21,8 @@ import {
   Shield
 } from 'lucide-react'
 import { type Config, type Service, type Group } from '@/lib/schemas'
+import { ServiceList } from '@/components/admin/service-list'
+import { ServiceForm } from '@/components/admin/service-form'
 import { useToast } from '@/components/ui/use-toast'
 
 export default function AdminPage() {
@@ -29,6 +31,8 @@ export default function AdminPage() {
   const [config, setConfig] = useState<Config | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
+  const [currentView, setCurrentView] = useState<'list' | 'form'>('list')
+  const [editingService, setEditingService] = useState<Service | undefined>(undefined)
 
   useEffect(() => {
     loadConfig()
