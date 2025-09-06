@@ -97,14 +97,8 @@ else
     log "Docker ist bereits installiert"
 fi
 
-# Alte docker-compose Version entfernen (falls vorhanden)
-if command -v docker-compose &> /dev/null; then
-    log "Entferne alte docker-compose Version..."
-    apt-get remove -y docker-compose
-fi
-
 # Docker Compose installieren (falls nicht vorhanden)
-if ! docker compose version &> /dev/null; then
+if ! command -v docker-compose &> /dev/null; then
     log "Installiere Docker Compose..."
     apt-get install -y docker-compose-plugin
     success "Docker Compose erfolgreich installiert"
@@ -149,11 +143,11 @@ chmod -R 755 "$LABORA_DIR"
 
 # Docker Images pullen (mit Überschreibung)
 log "Lade Docker Images herunter..."
-docker compose pull --ignore-pull-failures
+docker-compose pull --ignore-pull-failures
 
 # Bestehende Container stoppen und entfernen
 log "Stoppe und entferne bestehende Container..."
-docker compose down --remove-orphans 2>/dev/null || true
+docker-compose down --remove-orphans 2>/dev/null || true
 
 # Bestehende Images entfernen (um sicherzustellen, dass neue Versionen verwendet werden)
 log "Entferne alte Docker Images..."
@@ -162,7 +156,7 @@ docker system prune -f
 
 # Container neu erstellen und starten
 log "Erstelle und starte Labora Container..."
-docker compose up -d --build --force-recreate
+docker-compose up -d --build --force-recreate
 
 # Warten bis Container gestartet ist
 log "Warte auf Container-Start..."
@@ -186,7 +180,7 @@ done
 
 if [ $RETRY_COUNT -eq $MAX_RETRIES ]; then
     error "Labora konnte nicht gestartet werden. Überprüfen Sie die Logs:"
-    docker compose logs
+    docker-compose logs
     exit 1
 fi
 
@@ -210,8 +204,8 @@ After=docker.service
 Type=oneshot
 RemainAfterExit=yes
 WorkingDirectory=$LABORA_DIR
-ExecStart=/usr/bin/docker compose up -d
-ExecStop=/usr/bin/docker compose down
+ExecStart=/usr/bin/docker-compose up -d
+ExecStop=/usr/bin/docker-compose down
 TimeoutStartSec=0
 
 [Install]
@@ -223,7 +217,7 @@ systemctl enable labora.service
 
 # Status anzeigen
 log "Aktueller Status:"
-docker compose ps
+docker-compose ps
 
 echo -e "${GREEN}"
 echo "╔══════════════════════════════════════════════════════════════╗"
@@ -238,15 +232,15 @@ echo "  Web-Interface: http://$(hostname -I | awk '{print $1}'):3000"
 echo "  Health Check:  http://$(hostname -I | awk '{print $1}'):3000/api/health"
 echo ""
 echo -e "${BLUE}Nützliche Befehle:${NC}"
-echo "  Status anzeigen:    docker compose ps"
-echo "  Logs anzeigen:      docker compose logs -f"
-echo "  Container stoppen:  docker compose down"
-echo "  Container starten:  docker compose up -d"
+echo "  Status anzeigen:    docker-compose ps"
+echo "  Logs anzeigen:      docker-compose logs -f"
+echo "  Container stoppen:  docker-compose down"
+echo "  Container starten:  docker-compose up -d"
 echo "  Service verwalten:  systemctl start/stop/restart labora"
 echo ""
 echo -e "${BLUE}Konfiguration:${NC}"
 echo "  Config-Datei:       $LABORA_DIR/config/config.yml"
-echo "  Logs:               docker compose logs"
+echo "  Logs:               docker-compose logs"
 echo ""
 
 # Automatische Updates einrichten (optional)
@@ -257,8 +251,8 @@ cd /opt/labora
 git fetch --all
 git reset --hard origin/main
 git pull origin main
-docker compose pull
-docker compose up -d --build --force-recreate
+docker-compose pull
+docker-compose up -d --build --force-recreate
 docker system prune -f
 EOF
 
