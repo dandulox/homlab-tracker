@@ -239,6 +239,27 @@ export default function Dashboard() {
   const handleRefresh = async () => {
     setIsLoading(true)
     await loadConfig()
+    
+    // Update health statuses
+    try {
+      const response = await fetch('/api/services/health', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          services: config.services.map(s => s.name) 
+        }),
+      })
+      
+      if (response.ok) {
+        const healthData = await response.json()
+        setHealthStatuses(healthData)
+      }
+    } catch (error) {
+      console.error('Failed to update health statuses:', error)
+    }
+    
     setIsLoading(false)
   }
 
