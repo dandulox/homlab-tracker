@@ -1,7 +1,7 @@
 {
   "services": [
     {
-      "id": "heimdall-service-001",
+      "id": "grid-service-001",
       "type": "generic",
       "instanceId": "github",
       "name": "GitHub",
@@ -20,7 +20,7 @@
       }
     },
     {
-      "id": "heimdall-service-002",
+      "id": "grid-service-002",
       "type": "generic",
       "instanceId": "docker-hub",
       "name": "Docker Hub",
@@ -36,7 +36,7 @@
       }
     },
     {
-      "id": "heimdall-service-003",
+      "id": "grid-service-003",
       "type": "generic",
       "instanceId": "stackoverflow",
       "name": "Stack Overflow",
@@ -52,7 +52,7 @@
       }
     },
     {
-      "id": "heimdall-service-004",
+      "id": "grid-service-004",
       "type": "generic",
       "instanceId": "reddit",
       "name": "Reddit",
@@ -71,7 +71,7 @@
       }
     },
     {
-      "id": "heimdall-service-005",
+      "id": "grid-service-005",
       "type": "generic",
       "instanceId": "youtube",
       "name": "YouTube",
@@ -90,7 +90,7 @@
       }
     },
     {
-      "id": "heimdall-service-006",
+      "id": "grid-service-006",
       "type": "generic",
       "instanceId": "netflix",
       "name": "Netflix",
@@ -106,7 +106,7 @@
       }
     },
     {
-      "id": "heimdall-service-007",
+      "id": "grid-service-007",
       "type": "generic",
       "instanceId": "spotify",
       "name": "Spotify",
@@ -122,7 +122,7 @@
       }
     },
     {
-      "id": "heimdall-service-008",
+      "id": "grid-service-008",
       "type": "generic",
       "instanceId": "gmail",
       "name": "Gmail",
@@ -138,7 +138,7 @@
       }
     },
     {
-      "id": "heimdall-service-009",
+      "id": "grid-service-009",
       "type": "generic",
       "instanceId": "calendar",
       "name": "Google Calendar",
@@ -154,7 +154,7 @@
       }
     },
     {
-      "id": "heimdall-service-010",
+      "id": "grid-service-010",
       "type": "generic",
       "instanceId": "drive",
       "name": "Google Drive",
@@ -170,7 +170,7 @@
       }
     },
     {
-      "id": "heimdall-service-011",
+      "id": "grid-service-011",
       "type": "generic",
       "instanceId": "maps",
       "name": "Google Maps",
@@ -186,7 +186,7 @@
       }
     },
     {
-      "id": "heimdall-service-012",
+      "id": "grid-service-012",
       "type": "generic",
       "instanceId": "translate",
       "name": "Google Translate",
@@ -202,7 +202,7 @@
       }
     },
     {
-      "id": "heimdall-service-013",
+      "id": "grid-service-013",
       "type": "generic",
       "instanceId": "weather",
       "name": "Weather.com",
@@ -221,7 +221,7 @@
       }
     },
     {
-      "id": "heimdall-service-014",
+      "id": "grid-service-014",
       "type": "generic",
       "instanceId": "news",
       "name": "BBC News",
@@ -237,7 +237,7 @@
       }
     },
     {
-      "id": "heimdall-service-015",
+      "id": "grid-service-015",
       "type": "generic",
       "instanceId": "wikipedia",
       "name": "Wikipedia",

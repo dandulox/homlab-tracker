@@ -21,3 +21,4 @@ services:
 networks:
   labora:
     driver: bridge
+

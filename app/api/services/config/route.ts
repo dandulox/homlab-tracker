@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
     // Sicherheitsprüfung: Nur erlaubte Dateien
     const allowedFiles = [
       'services-example.json',
-      'services-heimdall-example.json',
+      'services-grid-example.json',
       'services.json'
     ];
     

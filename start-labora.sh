@@ -29,3 +29,4 @@ npm run build
 # Start the application
 echo "🌟 Starting Labora..."
 npm start
+

@@ -1,10 +1,10 @@
 # Service Registry - Homelab Dashboard
 
-Das Service Registry System ermöglicht es, Services in zwei Modi zu verwalten: **Heimdall-Modus** (reine Links/Kacheln) und **Homer-Modus** (mit Live-Checks und Widgets).
+Das Service Registry System ermöglicht es, Services in zwei Modi zu verwalten: **Grid-Modus** (reine Links/Kacheln) und **Dynamic-Modus** (mit Live-Checks und Widgets).
 
 ## Übersicht
 
-### Heimdall-Modus
+### Grid-Modus
 - **Zweck**: Reine Link-Sammlung ohne Live-Daten
 - **Verwendung**: Schneller Zugriff auf externe Services
 - **Features**: 
@@ -13,7 +13,7 @@ Das Service Registry System ermöglicht es, Services in zwei Modi zu verwalten: 
   - Custom Fields für Deep-Links
   - Keine API-Calls oder Health-Checks
 
-### Homer-Modus
+### Dynamic-Modus
 - **Zweck**: Live-Monitoring mit Health-Checks
 - **Verwendung**: Überwachung interner Services
 - **Features**:
@@ -66,7 +66,7 @@ Das Service Registry System ermöglicht es, Services in zwei Modi zu verwalten: 
 }
 ```
 
-## Heimdall-Modus Konfiguration
+## Grid-Modus Konfiguration
 
 ### Template-System
 ```json
@@ -84,7 +84,7 @@ Das Service Registry System ermöglicht es, Services in zwei Modi zu verwalten: 
 - `foundation`: Einfache Kachel mit Icon, Name, URL
 - `enhanced`: Erweiterte Kachel mit zusätzlichen Feldern
 
-### Beispiel (Heimdall)
+### Beispiel (Grid-Modus)
 ```json
 {
   "id": "github-001",
@@ -108,7 +108,7 @@ Das Service Registry System ermöglicht es, Services in zwei Modi zu verwalten: 
 }
 ```
 
-## Homer-Modus Konfiguration
+## Dynamic-Modus Konfiguration
 
 ### Health-Checks
 ```json
@@ -155,7 +155,7 @@ Das Service Registry System ermöglicht es, Services in zwei Modi zu verwalten: 
 }
 ```
 
-### Beispiel (Homer)
+### Beispiel (Dynamic-Modus)
 ```json
 {
   "id": "pihole-main-001",
